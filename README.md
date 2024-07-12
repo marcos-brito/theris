@@ -1,12 +1,12 @@
 # Theris
 
-Have you ever dreamed about changing the colorscheme for all your favorite applications with a single command? Well, I didn't. But either
+Have you ever dreamed about changing the colorscheme for all your favorite applications with a single command? Well, I haven't. But either
 way, I got you.
 
 Theris is what you might call a theme manager. It's similar to [pywal](https://github.com/dylanaraps/pywal) in some aspects, but with more focus on changing colorschemes
 instead of creating.
 
-There is also a handful of similar projects, but it took me a 5 minutes research on reddit and github to find them. It was too late.
+There is also a handful of similar projects, but it took me a 5 minutes research on reddit and github to find them. By then it was too late.
 
 ## Why
 
