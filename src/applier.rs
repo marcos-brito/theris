@@ -1,8 +1,10 @@
+mod delimeter;
 mod replace_text;
 mod script;
 
 use crate::{Templater, Theme};
 use anyhow::Result;
+use delimeter::Delimiter;
 use log::info;
 use replace_text::ReplaceText;
 use script::Script;
@@ -41,6 +43,7 @@ pub struct Applier {
 pub enum Method {
     ReplaceText(ReplaceText),
     Script(Script),
+    Delimeter(Delimiter),
 }
 
 impl Applier {
@@ -52,6 +55,7 @@ impl Applier {
         match &self.method {
             Method::ReplaceText(appliable) => appliable.apply(&context)?,
             Method::Script(appliable) => appliable.apply(&context)?,
+            Method::Delimeter(appliable) => appliable.apply(&context)?,
             _ => todo!(),
         }
 
