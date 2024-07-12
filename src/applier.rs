@@ -1,6 +1,7 @@
 mod delimeter;
 mod replace_text;
 mod script;
+mod template;
 
 use crate::{Templater, Theme};
 use anyhow::Result;
@@ -43,6 +44,7 @@ pub struct Applier {
 pub enum Method {
     ReplaceText(ReplaceText),
     Script(Script),
+    Template(Template),
     Delimeter(Delimiter),
 }
 
@@ -55,8 +57,8 @@ impl Applier {
         match &self.method {
             Method::ReplaceText(appliable) => appliable.apply(&context)?,
             Method::Script(appliable) => appliable.apply(&context)?,
+            Method::Template(appliable) => appliable.apply(&context)?,
             Method::Delimeter(appliable) => appliable.apply(&context)?,
-            _ => todo!(),
         }
 
         Ok(())
