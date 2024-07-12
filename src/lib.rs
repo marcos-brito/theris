@@ -1,5 +1,6 @@
 pub mod applier;
 pub mod template;
+pub mod utils;
 
 pub use applier::{Applier, Method};
 use serde::{Deserialize, Serialize};
