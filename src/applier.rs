@@ -5,11 +5,13 @@ mod template;
 
 use crate::{Templater, Theme};
 use anyhow::Result;
+use colored::Colorize;
 use delimeter::Delimiter;
 use log::info;
 use replace_text::ReplaceText;
 use script::Script;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use std::path::PathBuf;
 use template::Template;
 
@@ -40,12 +42,39 @@ pub struct Applier {
     method: Method,
 }
 
+impl fmt::Display for Applier {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}\n{}\n{}",
+            self.name.magenta().bold(),
+            format!("  {}: {}", "config file".bold(), self.path.display()),
+            format!("  {}: {}", "method".bold(), self.method),
+        )
+    }
+}
+
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Method {
     ReplaceText(ReplaceText),
     Script(Script),
     Template(Template),
     Delimeter(Delimiter),
+}
+
+impl fmt::Display for Method {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Method::ReplaceText(_) => "replace text",
+                Method::Script(_) => "script",
+                Method::Delimeter(_) => "delimiter",
+                Method::Template(_) => "template",
+            }
+        )
+    }
 }
 
 impl Applier {
