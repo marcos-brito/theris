@@ -31,7 +31,6 @@ impl Appliable for Delimiter {
     fn apply(&self, context: &ApplyContext) -> Result<()> {
         let content = fs::read_to_string(&context.config_file)?;
         let (start_exists, end_exists) = self.delimiter_status(&content);
-        println!("{content}");
 
         if !start_exists && !end_exists {
             warn!("No delimiters found at {}", context.config_file.display());
