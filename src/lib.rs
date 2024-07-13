@@ -1,4 +1,5 @@
 pub mod applier;
+pub mod backup;
 pub mod template;
 pub mod utils;
 
