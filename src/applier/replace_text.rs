@@ -1,5 +1,4 @@
 use super::{Appliable, ApplyContext};
-use crate::Templater;
 use anyhow::{anyhow, Context, Result};
 use log::warn;
 use regex::Regex;
@@ -13,10 +12,13 @@ pub struct ReplaceText {
 }
 
 impl Appliable for ReplaceText {
-    fn apply(&self, context: &ApplyContext) -> Result<()> {
+    fn apply(&self, context: ApplyContext) -> Result<()> {
+        let mut context = context;
         let content = fs::read_to_string(&context.config_file)
             .with_context(|| anyhow!("Failed to read {}", context.config_file.display()))?;
-        let rendered = Templater::new().render_raw(&self.replacement, &context.theme)?;
+        let rendered = context
+            .templater
+            .render_raw(&self.replacement, &context.theme)?;
         let reg = Regex::new(&self.target)?;
         let new = reg.replace(&content, &rendered);
 
@@ -57,7 +59,7 @@ mod test {
             }),
         };
 
-        applier.apply(&utils::theme(), &Templater::new())?;
+        applier.apply(&utils::theme(), &Templater::default())?;
 
         assert_eq!(
             fs::read_to_string(dir.path().join("test_file"))?,

@@ -9,7 +9,7 @@ pub struct Template {
 }
 
 impl Appliable for Template {
-    fn apply(&self, context: &ApplyContext) -> Result<()> {
+    fn apply(&self, context: ApplyContext) -> Result<()> {
         let rendered = context.templater.render(&self.template, &context.theme)?;
 
         fs::write(&context.config_file, &rendered)

@@ -9,10 +9,11 @@ pub struct Templater {
 }
 
 impl Templater {
-    pub fn new() -> Self {
-        Self {
-            engine: Tera::default(),
-        }
+    pub fn new(glob: &str) -> Result<Self>
+where {
+        Ok(Self {
+            engine: Tera::new(glob)?,
+        })
     }
 }
 

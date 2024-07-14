@@ -16,7 +16,7 @@ use std::path::PathBuf;
 use template::Template;
 
 trait Appliable {
-    fn apply(&self, context: &ApplyContext) -> Result<()>;
+    fn apply(&self, context: ApplyContext) -> Result<()>;
 }
 
 struct ApplyContext {
@@ -84,10 +84,10 @@ impl Applier {
 
         // Can't "or" this. The enum needs the struct itself (not the trait) so the yaml can be deserialized.
         match &self.method {
-            Method::ReplaceText(appliable) => appliable.apply(&context)?,
-            Method::Script(appliable) => appliable.apply(&context)?,
-            Method::Template(appliable) => appliable.apply(&context)?,
-            Method::Delimeter(appliable) => appliable.apply(&context)?,
+            Method::ReplaceText(appliable) => appliable.apply(context)?,
+            Method::Script(appliable) => appliable.apply(context)?,
+            Method::Template(appliable) => appliable.apply(context)?,
+            Method::Delimeter(appliable) => appliable.apply(context)?,
         }
 
         Ok(())

@@ -28,7 +28,7 @@ impl Delimiter {
 }
 
 impl Appliable for Delimiter {
-    fn apply(&self, context: &ApplyContext) -> Result<()> {
+    fn apply(&self, context: ApplyContext) -> Result<()> {
         let content = fs::read_to_string(&context.config_file)?;
         let (start_exists, end_exists) = self.delimiter_status(&content);
 
@@ -101,7 +101,7 @@ mod test {
             more text"#,
         )?;
 
-        let mut templater = Templater::new();
+        let mut templater = Templater::default();
         templater.add_raw_template("template", "current theme: {{name}}")?;
 
         applier(dir.path().join("test_file")).apply(&utils::theme(), &templater)?;
@@ -118,7 +118,7 @@ mod test {
         let dir = tempdir()?;
         fs::write(dir.path().join("test_file"), "replacement\ngoes\nhere")?;
 
-        let mut templater = Templater::new();
+        let mut templater = Templater::default();
         templater.add_raw_template("template", "current theme: {{name}}")?;
 
         applier(dir.path().join("test_file")).apply(&utils::theme(), &templater)?;
@@ -134,7 +134,7 @@ mod test {
     #[test]
     fn test_replace_delimiter_missing_part() -> Result<()> {
         let dir = tempdir()?;
-        let mut templater = Templater::new();
+        let mut templater = Templater::default();
         templater.add_raw_template("template", "current theme: {{name}}")?;
 
         let tests = vec![("top", "", "#end#"), ("bottom", "#start#", "")];

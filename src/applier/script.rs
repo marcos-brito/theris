@@ -11,7 +11,7 @@ pub struct Script {
 }
 
 impl Appliable for Script {
-    fn apply(&self, context: &ApplyContext) -> Result<()> {
+    fn apply(&self, context: ApplyContext) -> Result<()> {
         let out = Command::new(&self.path)
             .arg(context.theme.format_to_stdin())
             .output()?;
@@ -61,7 +61,7 @@ mod test {
         perm.set_mode(0o777);
         fs::set_permissions(&script_path, perm)?;
 
-        let result = applier.apply(&utils::theme(), &Templater::new());
+        let result = applier.apply(&utils::theme(), &Templater::default());
         assert_eq!(
             result.err().unwrap().to_string(),
             format!(
