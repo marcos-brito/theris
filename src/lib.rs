@@ -14,15 +14,15 @@ use std::fmt;
 pub use template::Templater;
 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
-// TODO: remove bg and fg and just use a hashmap for colors
 pub struct Theme {
     name: String,
     colors: HashMap<String, String>,
+    extra: Option<HashMap<String, String>>,
 }
 
 impl fmt::Display for Theme {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}\n", self.name.bold())?;
+        write!(f, "{}\n  ", self.name.bold())?;
 
         for color in self.colors.values() {
             let (r, g, b) = match utils::hexa_to_rgb(color) {
@@ -34,6 +34,15 @@ impl fmt::Display for Theme {
             };
 
             write!(f, "{}", "   ".on_truecolor(r, g, b))?;
+        }
+
+        match &self.extra {
+            Some(extra) => {
+                for (key, value) in extra.iter() {
+                    write!(f, "\n  - {}: {}", key.italic(), value)?;
+                }
+            }
+            None => (),
         }
 
         Ok(())

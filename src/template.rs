@@ -44,6 +44,15 @@ impl Templater {
             context.insert(key, color);
         }
 
+        match &theme.extra {
+            Some(extra) => {
+                for (key, value) in extra.iter() {
+                    context.insert(key, value);
+                }
+            }
+            None => (),
+        };
+
         context
     }
 

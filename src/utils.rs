@@ -6,6 +6,7 @@ pub fn theme() -> Theme {
     Theme {
         name: "gruvbox".to_string(),
         colors: HashMap::from([("background".to_string(), "".to_string())]),
+        extra: None,
     }
 }
 
