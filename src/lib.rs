@@ -9,6 +9,7 @@ pub mod utils;
 pub use applier::{Applier, Method};
 use colored::Colorize;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fmt;
 pub use template::Templater;
 
@@ -16,16 +17,14 @@ pub use template::Templater;
 // TODO: remove bg and fg and just use a hashmap for colors
 pub struct Theme {
     name: String,
-    background: String,
-    foreground: String,
-    colors: Vec<String>,
+    colors: HashMap<String, String>,
 }
 
 impl fmt::Display for Theme {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}\n", self.name.bold())?;
 
-        for color in self.colors.iter() {
+        for color in self.colors.values() {
             let (r, g, b) = match utils::hexa_to_rgb(color) {
                 Some(rgb) => rgb,
                 None => {
@@ -45,11 +44,13 @@ impl Theme {
     // Maybe rename this? i don't like it
     fn format_to_stdin(&self) -> String {
         format!(
-            "{}\n{}\n{}\n{}",
+            "{}\n{}",
             self.name,
-            self.background,
-            self.foreground,
-            self.colors.join("\n")
+            self.colors
+                .iter()
+                .map(|(key, color)| return format!("{key}:{color}"))
+                .collect::<Vec<String>>()
+                .join("\n")
         )
     }
 }

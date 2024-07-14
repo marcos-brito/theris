@@ -1,6 +1,6 @@
+use crate::Theme;
 use anyhow::Result;
 use colored::Colorize;
-use serde::Serialize;
 use std::fmt::Display;
 use std::path::Path;
 use tera::Tera;
@@ -30,13 +30,21 @@ impl Display for Templater {
 }
 
 impl Templater {
-    pub fn render<T>(&self, template_name: &str, data: &T) -> Result<String>
-    where
-        T: Serialize,
-    {
-        let context = tera::Context::from_serialize(data)?;
+    pub fn render(&self, template_name: &str, theme: &Theme) -> Result<String> {
+        Ok(self
+            .engine
+            .render(&template_name, &Templater::create_context(theme))?)
+    }
 
-        Ok(self.engine.render(&template_name, &context)?)
+    fn create_context(theme: &Theme) -> tera::Context {
+        let mut context = tera::Context::new();
+        context.insert("name", &theme.name);
+
+        for (key, color) in theme.colors.iter() {
+            context.insert(key, color);
+        }
+
+        context
     }
 
     pub fn add_template<P>(&mut self, path: P) -> Result<()>
@@ -62,13 +70,10 @@ impl Templater {
         Ok(())
     }
 
-    pub fn render_raw<T>(&mut self, template: &str, data: &T) -> Result<String>
-    where
-        T: Serialize,
-    {
-        let context = tera::Context::from_serialize(data)?;
-
-        Ok(self.engine.render_str(&template, &context)?)
+    pub fn render_raw(&mut self, template: &str, theme: &Theme) -> Result<String> {
+        Ok(self
+            .engine
+            .render_str(&template, &Templater::create_context(&theme))?)
     }
 }
 

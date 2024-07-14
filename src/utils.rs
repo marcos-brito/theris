@@ -1,12 +1,11 @@
 use crate::Theme;
 use hex::FromHex;
+use std::collections::HashMap;
 
 pub fn theme() -> Theme {
     Theme {
         name: "gruvbox".to_string(),
-        background: "".to_string(),
-        foreground: "".to_string(),
-        colors: vec![],
+        colors: HashMap::from([("background".to_string(), "".to_string())]),
     }
 }
 
