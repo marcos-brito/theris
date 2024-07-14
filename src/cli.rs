@@ -37,6 +37,7 @@ pub fn cli() -> Command {
                 .arg(
                     Arg::new("except")
                         .long("except")
+                        .action(ArgAction::SetTrue)
                         .help("Use all appliers except"),
                 )
                 .arg(Arg::new("appliers").help("List of appliers to be used")),
