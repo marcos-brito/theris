@@ -1,5 +1,7 @@
 use anyhow::Result;
+use colored::Colorize;
 use serde::Serialize;
+use std::fmt::Display;
 use std::path::Path;
 use tera::Tera;
 
@@ -14,6 +16,16 @@ where {
         Ok(Self {
             engine: Tera::new(glob)?,
         })
+    }
+}
+
+impl Display for Templater {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for template in self.engine.get_template_names() {
+            writeln!(f, "{}", template.bold())?;
+        }
+
+        Ok(())
     }
 }
 
