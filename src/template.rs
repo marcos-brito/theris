@@ -11,8 +11,7 @@ pub struct Templater {
 }
 
 impl Templater {
-    pub fn new(glob: &str) -> Result<Self>
-where {
+    pub fn new(glob: &str) -> Result<Self> {
         Ok(Self {
             engine: Tera::new(glob)?,
         })
