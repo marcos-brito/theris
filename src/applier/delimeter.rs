@@ -79,7 +79,7 @@ mod test {
         Applier {
             name: "test".to_string(),
             path,
-            method: Method::Delimeter(Delimiter {
+            method: Method::Delimiter(Delimiter {
                 template: "template".to_string(),
                 start: "#start#".to_string(),
                 end: "#end#".to_string(),

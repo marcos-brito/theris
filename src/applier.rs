@@ -69,7 +69,7 @@ pub enum Method {
     ReplaceText(ReplaceText),
     Script(Script),
     Template(Template),
-    Delimeter(Delimiter),
+    Delimiter(Delimiter),
 }
 
 impl fmt::Display for Method {
@@ -80,7 +80,7 @@ impl fmt::Display for Method {
             match self {
                 Method::ReplaceText(_) => "replace text",
                 Method::Script(_) => "script",
-                Method::Delimeter(_) => "delimiter",
+                Method::Delimiter(_) => "delimiter",
                 Method::Template(_) => "template",
             }
         )
@@ -97,7 +97,7 @@ impl Applier {
             Method::ReplaceText(appliable) => appliable.apply(context)?,
             Method::Script(appliable) => appliable.apply(context)?,
             Method::Template(appliable) => appliable.apply(context)?,
-            Method::Delimeter(appliable) => appliable.apply(context)?,
+            Method::Delimiter(appliable) => appliable.apply(context)?,
         }
 
         Ok(())
