@@ -51,17 +51,20 @@ impl Appliable for Delimiter {
         let head = content
             .lines()
             .take_while(|line| line.trim() != self.start)
-            .collect::<String>();
+            .collect::<Vec<_>>()
+            .join("\n");
+        // This one is inclusive
         let tail = content
             .lines()
             .skip_while(|line| line.trim() != self.end)
-            .collect::<String>();
+            .collect::<Vec<_>>()
+            .join("\n");
 
         let rendered = context.templater.render(&self.template, &context.theme)?;
 
         Ok(fs::write(
             &context.config_file,
-            format!("{head}\n{}\n{rendered}\n{}\n{tail}", &self.start, &self.end),
+            format!("{head}\n{}\n{rendered}\n{tail}", &self.start),
         )?)
     }
 }
