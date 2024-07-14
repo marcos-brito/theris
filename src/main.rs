@@ -1,3 +1,4 @@
+use anyhow::Error;
 use colored::Colorize;
 use env_logger::{Builder, Env};
 use human_panic::setup_panic;
@@ -11,8 +12,16 @@ fn main() {
     setup_log();
 
     if let Err(e) = run() {
-        error!("{e}");
+        log_backtrace(&e);
         std::process::exit(1);
+    }
+}
+
+fn log_backtrace(e: &Error) {
+    error!("{e}");
+
+    for cause in e.chain().skip(1) {
+        error!("\tCaused by: {cause}");
     }
 }
 
