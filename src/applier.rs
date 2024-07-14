@@ -42,6 +42,16 @@ pub struct Applier {
     method: Method,
 }
 
+impl Applier {
+    pub fn name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn path(&self) -> PathBuf {
+        self.path.clone()
+    }
+}
+
 impl fmt::Display for Applier {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(

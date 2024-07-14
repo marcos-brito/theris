@@ -18,11 +18,19 @@ impl Default for Config {
 }
 
 impl Config {
-    fn new(config_dir: PathBuf) -> Result<Self> {
+    pub fn new(config_dir: PathBuf) -> Result<Self> {
         Ok(Config {
             themes: Config::read_file::<Vec<Theme>>(config_dir.join("themes.yaml"))?,
             appliers: Config::read_file::<Vec<Applier>>(config_dir.join("appliers.yaml"))?,
         })
+    }
+
+    pub fn themes(&self) -> Vec<Theme> {
+        return self.themes.clone();
+    }
+
+    pub fn appliers(&self) -> Vec<Applier> {
+        return self.appliers.clone();
     }
 
     fn read_file<T>(path: PathBuf) -> Result<T>
@@ -36,6 +44,7 @@ impl Config {
             warn!("{} is empty", path.display());
         }
 
-        Ok(serde_yaml::from_str::<T>(&yaml)?)
+        Ok(serde_yaml::from_str::<T>(&yaml)
+            .context(anyhow!("Failed to parse {}", path.display()))?)
     }
 }
