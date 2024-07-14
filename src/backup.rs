@@ -3,7 +3,7 @@ use chrono::prelude::*;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
-use log::warn;
+use log::{info, warn};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io::Read;
@@ -93,6 +93,7 @@ impl Backup {
         archive.append_path_with_name(&manifest_path, MANIFEST_NAME)?;
         archive.finish()?;
 
+        info!("Backup written at {}", tar_path.display());
         Ok(tar_path)
     }
 
