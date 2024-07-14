@@ -1,3 +1,4 @@
+mod apply;
 mod list;
 
 use crate::cli::cli;
@@ -93,8 +94,8 @@ pub fn run() -> Result<()> {
     let app = App::new(config_path, templates_path, backup_path)?;
 
     match matches.subcommand() {
-        Some(("apply", submatches)) => todo!(),
         Some(("restore", submatches)) => todo!(),
+        Some(("apply", submatches)) => apply::Apply::new(submatches, &app).run(),
         Some(("list", submatches)) => list::List::new(submatches, &app).run(),
         _ => unreachable!(),
     }
