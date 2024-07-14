@@ -102,8 +102,18 @@ impl Backup {
         P: AsRef<Path>,
     {
         let backup_path = self.save(&path)?;
+        let link_path = path.as_ref().join("last");
 
-        std::os::unix::fs::symlink(backup_path, path.as_ref().join("last"))?;
+        if link_path.exists() {
+            let metadata = fs::symlink_metadata(&link_path)?;
+            if !metadata.is_symlink() {
+                bail!("{} exists and it's not a symlink", &link_path.display());
+            }
+
+            fs::remove_file(&link_path)?;
+        }
+
+        std::os::unix::fs::symlink(backup_path, &link_path)?;
 
         Ok(())
     }
