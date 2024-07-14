@@ -1,5 +1,7 @@
 pub mod applier;
 pub mod backup;
+pub mod cli;
+pub mod cmd;
 pub mod config;
 pub mod template;
 pub mod utils;

@@ -1,11 +1,10 @@
-use anyhow::Result;
-use clap::{crate_authors, crate_description, crate_version, Arg, Command};
 use colored::Colorize;
 use env_logger::{Builder, Env};
 use human_panic::setup_panic;
 use is_terminal::IsTerminal;
 use log::{error, Level};
 use std::io::Write;
+use theris::cmd::run;
 
 fn main() {
     setup_panic!();
@@ -14,36 +13,6 @@ fn main() {
     if let Err(e) = run() {
         error!("{e}");
         std::process::exit(1);
-    }
-}
-
-fn cli() -> Command {
-    Command::new("theris")
-        .author(crate_authors!("\n"))
-        .version(crate_version!())
-        .about(crate_description!())
-        .subcommand_required(true)
-        .subcommand(
-            Command::new("apply")
-                .about("Apply a theme")
-                .arg(Arg::new("theme").help("The theme to be applied"))
-                .arg(Arg::new("except").help("Apply all except"))
-                .arg(Arg::new("Appliers").help("Appliers to be used")),
-        )
-        .subcommand(
-            Command::new("restore")
-                .about("Restore files from a backup")
-                .arg(Arg::new("Backup's path").help("The path to the backup file")),
-        )
-}
-
-fn run() -> Result<()> {
-    let matches = cli().get_matches();
-
-    match matches.subcommand() {
-        Some(("apply", _submatches)) => todo!(),
-        Some(("restore", _submatches)) => todo!(),
-        _ => unreachable!(),
     }
 }
 
