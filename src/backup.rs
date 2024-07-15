@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 use chrono::prelude::*;
+use colored::Colorize;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
@@ -93,7 +94,10 @@ impl Backup {
         archive.append_path_with_name(&manifest_path, MANIFEST_NAME)?;
         archive.finish()?;
 
-        info!("Backup written at {}", tar_path.display());
+        info!(
+            "Backup written at {}",
+            tar_path.display().to_string().purple()
+        );
         Ok(tar_path)
     }
 
@@ -149,14 +153,14 @@ impl Backup {
         Ok(manifest.unwrap())
     }
 
-    pub fn restore<P>(path: P) -> Result<()>
+    pub fn restore<P>(backup_path: P) -> Result<()>
     where
         P: AsRef<Path>,
     {
-        let tar = fs::File::open(&path)?;
+        let tar = fs::File::open(&backup_path)?;
         let decoder = GzDecoder::new(&tar);
         let mut archive = tar::Archive::new(decoder);
-        let manifest = Backup::extract_manifest(&path)?;
+        let manifest = Backup::extract_manifest(&backup_path)?;
 
         for entry in archive.entries()? {
             let mut entry = entry?;
@@ -170,11 +174,39 @@ impl Backup {
                 None => bail!(
                     "Unknow file {} at {}",
                     entry.path()?.display(),
-                    path.as_ref().display()
+                    backup_path.as_ref().display()
                 ),
             };
 
+            info!("Restoring {} to {}", &pair.name, pair.path.display());
             entry.unpack(&pair.path)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn restore_to<P>(backup_path: P, dest: P) -> Result<()>
+    where
+        P: AsRef<Path>,
+    {
+        if !fs::metadata(&dest)?.is_dir() {
+            bail!("{} is not a directory", backup_path.as_ref().display())
+        }
+
+        let tar = fs::File::open(&backup_path)?;
+        let decoder = GzDecoder::new(&tar);
+        let mut archive = tar::Archive::new(decoder);
+
+        for entry in archive.entries()? {
+            let mut entry = entry?;
+            let dest = dest.as_ref().join(entry.path()?);
+
+            info!(
+                "Restoring {} to {}",
+                &entry.path()?.display(),
+                &dest.display()
+            );
+            entry.unpack(&dest)?;
         }
 
         Ok(())
@@ -213,6 +245,34 @@ mod test {
         files.map(|file| {
             assert_eq!(
                 fs::read_to_string(dir.path().join(file)).unwrap(),
+                "some text here"
+            )
+        });
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_restore_to() -> Result<()> {
+        let dir = tempdir()?;
+        let dest = tempdir()?;
+        let files = ["file1", "file2", "file3"];
+        let mut backup = Backup::new();
+
+        for file in files.iter() {
+            let path = dir.path().join(file);
+
+            fs::write(&path, "some text here")?;
+            backup.add(&path);
+        }
+
+        let backup_path = backup.save(dir.path())?;
+
+        Backup::restore_to(&backup_path, &dest.path().to_path_buf())?;
+
+        files.map(|file| {
+            assert_eq!(
+                fs::read_to_string(dest.path().join(file)).unwrap(),
                 "some text here"
             )
         });

@@ -86,7 +86,7 @@ impl Apply<'_> {
             backup.add(applier.path());
         }
 
-        backup.save_as_last(&self.app.backup_path)?;
+        backup.save_as_last(&self.app.backup_dir)?;
 
         Ok(())
     }

@@ -1,5 +1,6 @@
 mod apply;
 mod list;
+mod restore;
 
 use crate::cli::cli;
 use crate::config::Config;
@@ -15,7 +16,7 @@ trait Cmd {
 struct App {
     config: Config,
     templater: Templater,
-    backup_path: PathBuf,
+    backup_dir: PathBuf,
 }
 
 impl App {
@@ -33,7 +34,7 @@ impl App {
         Ok(Self {
             config,
             templater,
-            backup_path: backup,
+            backup_dir: backup,
         })
     }
 
@@ -94,9 +95,9 @@ pub fn run() -> Result<()> {
     let app = App::new(config_path, templates_path, backup_path)?;
 
     match matches.subcommand() {
-        Some(("restore", submatches)) => todo!(),
         Some(("apply", submatches)) => apply::Apply::new(submatches, &app).run(),
         Some(("list", submatches)) => list::List::new(submatches, &app).run(),
+        Some(("restore", submatches)) => restore::Restore::new(submatches, &app).run(),
         _ => unreachable!(),
     }
 }

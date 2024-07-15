@@ -49,7 +49,8 @@ pub fn cli() -> Command {
                     Arg::new("backup_path")
                         .help("Path to the backup file")
                         .required(true),
-                ),
+                )
+                .arg(Arg::new("dest").help("Path where the backup will be restored")),
         )
         .subcommand(
             Command::new("list").about("List a collection").arg(
