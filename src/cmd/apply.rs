@@ -109,11 +109,11 @@ impl Cmd for Apply<'_> {
                 if self.except {
                     self.apply_all_except(&theme, &appliers)?;
                 } else {
-                    for applier in appliers.iter() {
-                        if self.should_backup {
-                            self.create_backup(&appliers)?;
-                        }
+                    if self.should_backup {
+                        self.create_backup(&appliers)?;
+                    }
 
+                    for applier in appliers.iter() {
                         applier.apply(&theme, &self.app.templater)?;
                     }
                 }
