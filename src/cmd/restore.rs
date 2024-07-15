@@ -1,6 +1,6 @@
 use super::{App, Cmd};
 use crate::backup::Backup;
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::ArgMatches;
 use colored::Colorize;
 use log::info;
@@ -35,9 +35,14 @@ impl Cmd for Restore<'_> {
         };
 
         match &self.dest {
-            Some(dest) => Backup::restore_to(&backup_path, &dest)?,
+            Some(dest) => Backup::restore_to(&backup_path, &dest).context(format!(
+                "Failed to restore {} to {}",
+                backup_path.display(),
+                dest.display()
+            ))?,
             None => {
-                Backup::restore(&backup_path)?;
+                Backup::restore(&backup_path)
+                    .context(format!("Failed to restore {}", backup_path.display(),))?;
             }
         }
 
@@ -45,6 +50,7 @@ impl Cmd for Restore<'_> {
             "Done restoring {} ",
             backup_path.display().to_string().purple()
         );
+
         Ok(())
     }
 }
