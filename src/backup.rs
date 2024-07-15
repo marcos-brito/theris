@@ -105,7 +105,6 @@ impl Backup {
     where
         P: AsRef<Path>,
     {
-        let backup_path = self.save(&path)?;
         let link_path = path.as_ref().join("last");
 
         if link_path.exists() {
@@ -117,6 +116,7 @@ impl Backup {
             fs::remove_file(&link_path)?;
         }
 
+        let backup_path = self.save(&path)?;
         std::os::unix::fs::symlink(backup_path, &link_path)?;
 
         Ok(())
