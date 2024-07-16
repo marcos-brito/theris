@@ -37,7 +37,16 @@ impl Appliable for Script {
 
         let out = child.wait_with_output()?;
         if !out.status.success() {
-            let err = String::from_utf8_lossy(&out.stderr);
+            let mut err = String::from_utf8_lossy(&out.stderr);
+
+            if err.is_empty() {
+                err = String::from_utf8_lossy(&out.stdout);
+
+                warn!(
+                    "stderr of {} is empty. Showing stdout instead",
+                    self.path.display()
+                );
+            }
 
             bail!("{} failed: {}", self.path.display(), err)
         }
