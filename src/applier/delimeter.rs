@@ -25,10 +25,26 @@ impl Delimiter {
 
         (start_exists, end_exists)
     }
+
+    fn render(&self, context: &mut ApplyContext) -> Result<String> {
+        Ok(match self.is_template_file(&context) {
+            true => context.templater.render(&self.template, &context.theme)?,
+            false => context
+                .templater
+                .render_raw(&self.template, &context.theme)?,
+        })
+    }
+
+    fn is_template_file(&self, context: &ApplyContext) -> bool {
+        context
+            .templater
+            .templates()
+            .any(|name| name == self.template)
+    }
 }
 
 impl Appliable for Delimiter {
-    fn apply(&self, context: ApplyContext) -> Result<()> {
+    fn apply(&self, mut context: ApplyContext) -> Result<()> {
         let content = fs::read_to_string(&context.config_file)?;
         let (start_exists, end_exists) = self.delimiter_status(&content);
 
@@ -60,7 +76,7 @@ impl Appliable for Delimiter {
             .collect::<Vec<_>>()
             .join("\n");
 
-        let rendered = context.templater.render(&self.template, &context.theme)?;
+        let rendered = self.render(&mut context)?;
 
         Ok(fs::write(
             &context.config_file,

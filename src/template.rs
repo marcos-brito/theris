@@ -83,6 +83,10 @@ impl Templater {
             .engine
             .render_str(&template, &Templater::create_context(&theme))?)
     }
+
+    pub fn templates(&self) -> impl Iterator<Item = &str> {
+        self.engine.get_template_names()
+    }
 }
 
 impl Default for Templater {
