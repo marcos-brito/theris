@@ -2,28 +2,42 @@ use super::{Appliable, ApplyContext};
 use anyhow::{bail, Result};
 use log::warn;
 use serde::{Deserialize, Serialize};
+use std::io::Write;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Child, Command, Stdio};
 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct Script {
     path: PathBuf,
 }
 
+impl Script {
+    fn write_input_to_child(&self, child: &mut Child, context: &ApplyContext) {
+        let mut stdin = child.stdin.take().expect("Child has stdin");
+
+        if let Err(e) = stdin.write_all(context.theme.format_to_stdin().as_bytes()) {
+            warn!(
+                "Couldn't write to stdin after spawning {}: {}",
+                &self.path.display(),
+                e
+            );
+        }
+    }
+}
+
 impl Appliable for Script {
     fn apply(&self, context: ApplyContext) -> Result<()> {
-        let out = Command::new(&self.path)
-            .arg(context.theme.format_to_stdin())
-            .output()?;
+        let mut child = Command::new(&self.path)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()?;
 
+        self.write_input_to_child(&mut child, &context);
+
+        let out = child.wait_with_output()?;
         if !out.status.success() {
-            let err = match String::from_utf8(out.stderr) {
-                Ok(err) => err,
-                Err(e) => {
-                    warn!("stderr of {} has invalid utf8: {e}", self.path.display());
-                    String::new()
-                }
-            };
+            let err = String::from_utf8_lossy(&out.stderr);
 
             bail!("{} failed: {}", self.path.display(), err)
         }
@@ -41,7 +55,7 @@ mod test {
     use std::os::unix::fs::PermissionsExt;
 
     #[test]
-    fn test_run_script() -> Result<()> {
+    fn test_run_script_error() -> Result<()> {
         let dir = tempfile::tempdir_in(".")?;
         let script_path = dir.path().join("script.sh");
         let applier = Applier {
@@ -54,7 +68,7 @@ mod test {
 
         fs::write(
             &script_path,
-            "#!/bin/sh\n\necho \"Some error\" >&2\n exit 1".as_bytes(),
+            "#!/bin/sh\n\n(echo \"Some error\" >&2) &&\nexit 1".as_bytes(),
         )?;
 
         let mut perm = fs::metadata(&script_path)?.permissions();

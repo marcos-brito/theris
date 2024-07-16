@@ -8,6 +8,7 @@ pub mod utils;
 
 pub use applier::{Applier, Method};
 use colored::Colorize;
+use log::warn;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
@@ -52,14 +53,12 @@ impl fmt::Display for Theme {
 impl Theme {
     // Maybe rename this? i don't like it
     fn format_to_stdin(&self) -> String {
-        format!(
-            "{}\n{}",
-            self.name,
-            self.colors
-                .iter()
-                .map(|(key, color)| return format!("{key}:{color}"))
-                .collect::<Vec<String>>()
-                .join("\n")
-        )
+        match serde_json::to_string(&self) {
+            Ok(json) => json,
+            Err(e) => {
+                warn!("Couldn't write json output: {e}");
+                String::new()
+            }
+        }
     }
 }
