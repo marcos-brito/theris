@@ -1,9 +1,13 @@
 [package]
+authors = ["Marcos Brito"]
 name = "theris"
+description = "A color scheme manager for *NIX ricers"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+keywords = ["theme", "color", "cli", "color-scheme", "manager"]
+categories = ["command-line-utilities"]
+repository = "https://github.com/marcos-brito/theris"
+license = "GPL-3.0-or-later"
 
 [dependencies]
 anyhow = "1.0.86"
