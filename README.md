@@ -15,6 +15,8 @@ changing my mind instead.
 
 # Usage
 
+The docs are hosted [here](https://marcos-brito.github.io/theris/), but you can also read it from the repository (see [docs](./docs/src/README.md)). It's a quick read, don't worry.
+
 # Contributing
 
 Yes! Join the dark side. Check [this](./CONTRIBUTING.md) file.
