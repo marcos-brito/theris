@@ -5,6 +5,7 @@ description = "A color scheme manager for *NIX ricers"
 version = "0.1.0"
 edition = "2021"
 keywords = ["theme", "color", "cli", "color-scheme", "manager"]
+homepage = "https://marcos-brito.github.io/theris/"
 categories = ["command-line-utilities"]
 repository = "https://github.com/marcos-brito/theris"
 license = "GPL-3.0-or-later"
