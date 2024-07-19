@@ -6,5 +6,5 @@ src = "src"
 title = "Theris Documentation"
 
 [output.html]
-git-repository-url = "https://github.com/rust-lang/mdBook"
+git-repository-url = "https://marcos-brito.github.io/theris/"
 site-url = "/theris/"
