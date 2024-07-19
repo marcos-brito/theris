@@ -1,0 +1,40 @@
+- name: kitty
+  path: /config/kitty.conf
+  method: !Template
+    template: kitty
+
+- name: kitty_hook
+  path: ""
+  method: !Script
+    path: /scripts/kitty.sh
+
+- name: eww
+  path: /config/eww.scss
+  method: !Delimiter
+    template: eww
+    start: "// theris start"
+    end: "// theris end"
+
+- name: zathura
+  path: /config/zathura
+  method: !Template
+    template: zathura
+
+- name: nvim
+  path: /config/nvim.lua
+  method: !Delimiter
+    template: nvim
+    start: "-- theris start"
+    end: "-- theris end"
+
+- name: hyprpaper
+  path: "/config/hyprpaper.conf"
+  method: !Delimiter
+    template: "wallpaper = HDMI-A-1, {{wallpaper}}"
+    start: "# theris start"
+    end: "# theris end"
+
+- name: hyprpaper_hook
+  path: ""
+  method: !Script
+    path: "/scripts/wallpaper.sh"
