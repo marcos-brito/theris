@@ -11,5 +11,3 @@ You should see [Configuration](./config.md) to learn more about it. In short you
 - Create some template files
 - Define your color schemes
 - Tell theris how to apply the theme
-
-Here is a little preview for you:

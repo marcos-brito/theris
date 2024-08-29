@@ -1,3 +1,7 @@
+![Theris preview](./preview.gif)
+
+> Using some keyboard shortcuts
+
 # Theris
 
 Have you ever dreamed about changing the color scheme for all your favorite applications with a single command? Well, I haven't. But either
